@@ -1,13 +1,10 @@
-# gopapi
+# gopappy
 
-Papi stands for "daddy" in spanish.
-
-## Authorization
-API key and secret is ciphered with a AES using a password.
+Inspo from [here](https://github.com/gamikun/gopapi).
 
 ## Installation
 ```bash
-python -m pip install gopapi
+python -m pip install gopappy
 ```
 
 ## Usage
@@ -15,32 +12,32 @@ python -m pip install gopapi
 ### Adding a DNS record to a domain
 ```bash
 # A record
-gopapi domain yourdomain.com add-record A subdomain 127.0.0.1
+gopappy domain yourdomain.com add-record A subdomain 127.0.0.1
 # Where A can also be CNAME
 # 127.0.0.1 to be replaced with the actual IP
 
 # CNAME
-gopapi domain yourdomain.com add-record A subdomain 127.0.0.1
+gopappy domain yourdomain.com add-record A subdomain 127.0.0.1
 # Where A can also be CNAME
 # 127.0.0.1 to be replaced with the actual IP
 ```
 ### Listing records of a domain
 ```bash
-gopapi domain mydomain.com records
+gopappy domain mydomain.com records
 # and if you need to filter by record type
-gopapi domain mydomain.com records -t cname
+gopappy domain mydomain.com records -t cname
 ```
 
 ### Listing all domains in godaddy account
 ```bash
-gopapi domains
+gopappy domains
 # mydomain1.com
 # mydomain2.com
 ```
 
 ### Check wether a domain is available to purchase or not
 ```bash
-gopapi domain mexico.com check
+gopappy domain acme.com check
 # or with alias
-gopapi domain mexico.com available
+gopappy domain acme.com available
 ```

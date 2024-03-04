@@ -1,0 +1,42 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
+{
+  "name": "Dev Environment",
+  // "build": {
+  //   "dockerfile": "../Dockerfile"
+  // }
+  "service": "app",
+  "workspaceFolder": "/app",
+  "dockerComposeFile": "../docker-compose.yml",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "aaron-bond.better-comments",
+        "codezombiech.gitignore",
+        "eamodio.gitlens",
+        "EditorConfig.EditorConfig",
+        "foxundermoon.shell-format",
+        "GitHub.copilot-chat",
+        "GitHub.copilot",
+        "jetpack-io.devbox",
+        "mads-hartmann.bash-ide-vscode",
+        "mechatroner.rainbow-csv",
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-python.python",
+        "ms-vscode.atom-keybindings",
+        "ms-vsliveshare.vsliveshare",
+        "redhat.ansible",
+        "redhat.vscode-yaml",
+        "ryu1kn.partial-diff",
+        "timonwong.shellcheck",
+        "yzhang.markdown-all-in-one"
+      ]
+    }
+  },
+  "forwardPorts": [
+    8000,
+    8080
+  ]
+}

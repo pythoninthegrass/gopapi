@@ -1,10 +1,16 @@
+#!/usr/bin/env python
+
 from Crypto.Cipher import AES
-from binascii import hexlify
 from hashlib import sha256
 from os import urandom
 
-salt = lambda: urandom(16)
+
+def salt():
+    return urandom(16)
+
+
 iv = 'GoDaddy Auth 123'
+
 
 def cipher_auth(key, secret, password):
     hashed_pwd = sha256(password).digest()
@@ -14,6 +20,7 @@ def cipher_auth(key, secret, password):
         secret.ljust(48), salt(),
     ])
     return aes.encrypt(data)
+
 
 def decipher_auth(serialized, password):
     hashed_pwd = sha256(password).digest()

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+import auth
 import requests
 
 
@@ -18,7 +21,7 @@ class API:
     def get(self, path, **params):
         headers = {
             'Authorization': 'sso-key {}:{}'.format(
-                self.key.decode(), self.secret.decode()
+                auth.API_KEY, auth.API_SECRET
             )
         }
         url = '{}/{}'.format(self.api_url, path)
@@ -26,8 +29,8 @@ class API:
 
     def patch(self, path, **kwargs):
         headers = {
-            'Authorization': 'sso-key {}:{}'.format(self.key, self.secret),
-            'Content-Type': 'application/json',
+            "Authorization": "sso-key {}:{}".format(auth.API_KEY, auth.API_SECRET),
+            "Content-Type": "application/json",
         }
         url = '{}/{}'.format(self.api_url, path)
         return requests.patch(url, headers=headers, **kwargs)

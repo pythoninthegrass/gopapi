@@ -1,12 +1,11 @@
-from __future__ import absolute_import, print_function
-from argparse import ArgumentParser
-from getpass import getpass
-from gopapi.crypto import cipher_auth, decipher_auth
-from gopapi.api import API
-import requests
+#!/usr/bin/env python
+
 import json
 import sys
 import os
+from api import API
+from argparse import ArgumentParser
+# from crypto import cipher_auth, decipher_auth
 
 
 def handle_domain(args):
@@ -18,22 +17,19 @@ def handle_domain(args):
     if action == 'records':
         response = api.get('domains/{}/records'.format(domain))
         data = response.json()
-        
+
         for record in data:
             if not args.only_type \
             or record['type'].lower() == args.only_type.lower():
-                print("{}\t{}\t{}".format(record['type'],
-                                          record['name'],
-                                          record['data']
-                                          ))
+                print(f"{record['type']: <10}{record['name']: <20}{record['data']}")
 
     elif action == 'add-record':
         url = 'domains/{}/records'.format(domain)
         params = [
             {
-                'type': args.data[0].upper(), # A / CNAME
-                'name': args.data[1], # fulano., mangano.
-                'data': args.data[2], # points to ip/domain
+                'type': args.data[0].upper(),   # A / CNAME
+                'name': args.data[1],           # fulano., mangano.
+                'data': args.data[2],           # points to ip/domain
             }
         ]
         response = api.patch(url, data=json.dumps(params))
@@ -47,7 +43,7 @@ def handle_domain(args):
         url = 'domains/suggest'
         domains = args.data[0].split(',')
         response = api.get(url, tlds=domains)
-        #print(response.content)
+        # print(response.content)
 
     elif action == 'available' or action == 'check':
         response = api.get('domains/available', domain=domain)
@@ -56,11 +52,10 @@ def handle_domain(args):
             print('available')
         else:
             print('not available')
-        
+
 
 def main():
     parser = ArgumentParser()
-
     subparsers = parser.add_subparsers(dest='entity')
 
     # DOMAIN
@@ -78,29 +73,8 @@ def main():
     domains_parser = subparsers.add_parser('domains')
     domains_parser.add_argument('-status', dest='status', default='active')
 
-    inter_parser = subparsers.add_parser('i')
-
     api = API.shared()
     args = parser.parse_args()
-
-    config_file = os.path.expanduser('~/.gopapi')
-    if not os.path.isfile(config_file):
-        api.key = getpass('API Key: ').encode()
-        api.secret = getpass('Secret: ').encode()
-
-        should_save = input('should save auth? (y/n): ')
-
-        if should_save.lower().startswith('y'):
-            passwd = getpass('password protection: ').encode()
-            with open(config_file, 'wb') as fp:
-                serialized = cipher_auth(api.key, api.secret, passwd)
-                fp.write(serialized)
-    else:
-        passwd = getpass('unlock auth: ').encode()
-        with open(config_file, 'rb') as fp:
-            data = fp.read()
-            auth = decipher_auth(data, passwd)
-            api.key, api.secret = auth
 
     if args.entity == 'domain':
         handle_domain(args)
@@ -116,8 +90,6 @@ def main():
             else:
                 print(domain['domain'])
 
-    elif args.entity == 'i':
-        from gopapi import interactive
 
 if __name__ == '__main__':
     main()

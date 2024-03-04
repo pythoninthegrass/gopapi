@@ -1,0 +1,60 @@
+version: "3.0"
+
+set: ['e', 'u', 'pipefail']
+shopt: ['globstar']
+
+# env:
+
+tasks:
+  default:
+    desc: "Default task"
+    cmds:
+      - task --list
+
+  add-test-pypi:
+    desc: "Add test-pypi repository"
+    cmds:
+      - |
+        if [[ -z $(poetry config repositories.test-pypi) ]]; then
+          poetry config repositories.test-pypi https://test.pypi.org/legacy/
+          poetry config pypi-token.test-pypi {{.PYPI_TEST_TOKEN}}
+        fi
+
+  build:
+    desc: "Build the poetry bin"
+    cmds:
+      - poetry build
+
+  publish-test:
+    desc: "Publish the poetry bin"
+    deps: ["add-test-pypi", "build"]
+    cmds:
+      - poetry publish -r test-pypi
+
+  publish:
+    desc: "Publish the poetry bin"
+    deps: ["build"]
+    cmds:
+      - poetry publish
+
+  update-deps:
+    desc: "Update dependencies"
+    cmds:
+      - |
+        poetry cache clear --all pypi --no-ansi
+        poetry up 2>/dev/null
+        poetry update --lock --no-ansi
+
+  export-reqs:
+    desc: "Export requirements.txt"
+    summary: |
+      Export the project dependencies to a requirements.txt file.
+    cmds:
+      - |
+        poetry export -f requirements.txt \
+          --output {{.TLD}}/requirements.txt \
+          --without-hashes \
+          --no-ansi
+    ignore_error: true
+
+

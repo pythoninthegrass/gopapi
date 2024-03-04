@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/pythoninthegrass/gopappy/compare/v1.2.2...v1.2.3) (2024-03-04)
+
+
+### Documentation
+
+* Fix header formatting ([311689d](https://github.com/pythoninthegrass/gopappy/commit/311689ddf0fc9c7b9b2b24a0b0db24196ffdc495))
+
 ## [1.2.2](https://github.com/pythoninthegrass/gopappy/compare/v1.2.2...v1.2.2) (2024-03-04)
 
 

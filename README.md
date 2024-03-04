@@ -31,7 +31,7 @@ gopapi domain mydomain.com records
 gopapi domain mydomain.com records -t cname
 ```
 
-### Listing all domains in godaddy account
+### Listing all domains in godaddy account
 ```bash
 gopapi domains
 # mydomain1.com

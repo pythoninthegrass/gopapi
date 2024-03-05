@@ -35,7 +35,7 @@ gopappy domains
 # mydomain2.com
 ```
 
-### Check wether a domain is available to purchase or not
+### Check whether a domain is available to purchase or not
 ```bash
 gopappy domain acme.com check
 # or with alias

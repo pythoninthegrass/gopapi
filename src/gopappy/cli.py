@@ -4,7 +4,7 @@ import json
 import sys
 import os
 from .api import API
-from argparse import ArgumentParser
+from argparse import ArgumentParser # TODO: switch to typer
 # from crypto import cipher_auth, decipher_auth
 
 
@@ -60,6 +60,7 @@ def main():
 
     # DOMAIN
     domain_parser = subparsers.add_parser('domain')
+
     domain_parser.add_argument('domain', nargs=1,
                                help=('Domain to be managed. '
                                      'e.g. mydomain.com')
@@ -75,6 +76,10 @@ def main():
 
     api = API.shared()
     args = parser.parse_args()
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
 
     if args.entity == 'domain':
         handle_domain(args)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import auth
 import requests
+from . import auth
 
 
 class API:

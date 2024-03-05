@@ -12,7 +12,7 @@ setup(
     packages=["gopappy"],
     version=gopappy.__version__,
     description="Simple way to access GoDaddy API",
-    long_description=open(join(basepath, "README.txt")).read(),
+    long_description=open(join(basepath, "README.md")).read(),
     scripts=[join(binpath, "gopappy")],
     install_requires=["pycrypto", "requests"],
     author="Lance Stephens",

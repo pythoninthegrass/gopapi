@@ -3,7 +3,7 @@
 import json
 import sys
 import os
-from api import API
+from .api import API
 from argparse import ArgumentParser
 # from crypto import cipher_auth, decipher_auth
 

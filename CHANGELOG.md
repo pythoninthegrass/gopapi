@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/pythoninthegrass/gopappy/compare/v1.2.3...v1.2.4) (2024-03-05)
+
+
+### Documentation
+
+* Fix typo ([91dfb38](https://github.com/pythoninthegrass/gopappy/commit/91dfb389638cf1d7375130166266c9c5a498f2e3))
+
 ## [1.2.3](https://github.com/pythoninthegrass/gopappy/compare/v1.2.2...v1.2.3) (2024-03-04)
 
 

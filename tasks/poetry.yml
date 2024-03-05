@@ -30,10 +30,21 @@ tasks:
             echo "Invalid repository"
             ;;
         esac
+    silent: true
+
+  build:
+    desc: "Build the poetry bin"
+    cmds:
+      - poetry build --format wheel --no-ansi
+
+  install:
+    desc: "Install project dependencies"
+    cmds:
+      - poetry install --no-ansi
 
   publish:
     desc: "Publish the poetry bin"
-    deps: ["add-pypi"]
+    deps: ["add-pypi", "build"]
     summary: |
       Release your project to PyPI or TestPyPI.
 
@@ -43,10 +54,10 @@ tasks:
       - |
         case {{.CLI_ARGS}} in
           "test")
-            poetry publish -r test-pypi --build
+            poetry publish -r test-pypi
             ;;
           "prod")
-            poetry publish --build
+            poetry publish
             ;;
           *|"")
             echo "Invalid repository"

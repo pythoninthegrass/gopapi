@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/pythoninthegrass/gopappy/compare/v1.2.4...v1.3.0) (2024-03-06)
+
+
+### Miscellaneous Chores
+
+* release 1.3.0 ([53808e5](https://github.com/pythoninthegrass/gopappy/commit/53808e5497b1bf7262516ddd748b9cee186af4d2))
+
 ## [1.2.4](https://github.com/pythoninthegrass/gopappy/compare/v1.2.3...v1.2.4) (2024-03-05)
 
 

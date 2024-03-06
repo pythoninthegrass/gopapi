@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gopappy"
-version = "1.3.0"
+version = "1.4.0"
 description = "GoDaddy API implementation with cached auth token and protected."
 authors = [
     "Gamaliel Espinoza <gamaliel.espinoza@gmail.com>",

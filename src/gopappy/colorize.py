@@ -2,6 +2,7 @@
 
 from colorama import Fore, Style
 
+
 def colorize(color, text):
     """Colorize the text."""
     colors = {

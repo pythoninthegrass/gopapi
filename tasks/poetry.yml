@@ -106,5 +106,3 @@ tasks:
           --without-hashes \
           --no-ansi
     ignore_error: true
-
-

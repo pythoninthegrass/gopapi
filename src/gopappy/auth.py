@@ -12,6 +12,8 @@ from pathlib import Path
 
 cwd = str(Path.cwd().resolve())
 
+verbose = False
+
 
 def redact(text):
     """Redact the middle of a string, leaving the first and last 4 characters untouched."""
@@ -37,8 +39,9 @@ def get_env(silent=True):
             print_env(API_KEY, API_SECRET, DOMAIN)
         return API_KEY, API_SECRET, DOMAIN
     except UndefinedValueError:
-        colorize("red", "API_KEY, API_SECRET or DOMAIN are not set in .env file or as environment variables")
-        colorize("yellow", f"Script is being called from {cwd}")
+        if verbose is True:
+            colorize("red", "API_KEY, API_SECRET or DOMAIN are not set in .env file or as environment variables")
+            colorize("yellow", f"Script is being called from {cwd}")
 
 
 def set_keyring(key, secret, domain):

@@ -1,15 +1,90 @@
 #!/usr/bin/env python
 
+import keyring
+import keyring.util.platform_ as kp
 import sys
-# from crypto import cipher_auth, decipher_auth
-from decouple import config
+from gopappy.colorize import colorize
+from colorama import Fore, Style
+from decouple import config, UndefinedValueError
+from getpass import getpass
+from keyring import errors
+from pathlib import Path
 
-# CREDENTIALS
-API_KEY = config("API_KEY")
-API_SECRET = config("API_SECRET")
-DOMAIN = config("DOMAIN")
+cwd = str(Path.cwd().resolve())
 
-# TODO: add ~/.gopappy file to store the API_KEY and API_SECRET
-if not API_KEY or not API_SECRET or not DOMAIN:
-    print('Please set API_KEY, API_SECRET and DOMAIN in .env file')
-    sys.exit(1)
+
+def redact(text):
+    """Redact the middle of a string, leaving the first and last 4 characters untouched."""
+    return text[:4] + '*' * (len(text) - 8) + text[-4:]
+
+
+# TODO: use colorize instead
+def print_env(key, secret, domain):
+    """Print the environment variables."""
+    print(f"{Fore.YELLOW}API_KEY:{Style.RESET_ALL}\t{redact(key)}")
+    print(f"{Fore.YELLOW}API_SECRET:{Style.RESET_ALL}\t{redact(secret)}")
+    print(f"{Fore.YELLOW}DOMAIN:{Style.RESET_ALL}\t\t{domain}\n")
+
+
+def get_env(silent=True):
+    """Get environment variables from .env file or from the environment."""
+    try:
+        API_KEY = config("API_KEY")
+        API_SECRET = config("API_SECRET")
+        DOMAIN = config("DOMAIN")
+        if silent is False:
+            colorize("green", "Successfully loaded environment variables!\n")
+            print_env(API_KEY, API_SECRET, DOMAIN)
+        return API_KEY, API_SECRET, DOMAIN
+    except UndefinedValueError:
+        colorize("red", "API_KEY, API_SECRET or DOMAIN are not set in .env file or as environment variables")
+        colorize("yellow", f"Script is being called from {cwd}")
+
+
+def set_keyring(key, secret, domain):
+    """Set environment variables in the system's keyring."""
+    try:
+        keyring.set_password("gopappy", "API_KEY", key)
+        keyring.set_password("gopappy", "API_SECRET", secret)
+        keyring.set_password("gopappy", "DOMAIN", domain)
+        colorize("green", "Successfully set environment variables in keyring!\n")
+    except kp.errors.InitError:
+        colorize("red", "Failed to retrieve environment variables from keyring")
+
+
+def get_keyring(silent=True):
+    """Get environment variables from the system's keyring."""
+    try:
+        API_KEY = keyring.get_password("gopappy", "API_KEY")
+        API_SECRET = keyring.get_password("gopappy", "API_SECRET")
+        DOMAIN = keyring.get_password("gopappy", "DOMAIN")
+        if not API_KEY or not API_SECRET or not DOMAIN:
+            raise errors.InitError
+        else:
+            if silent is False:
+                colorize("green", "Successfully loaded environment variables from keyring!\n")
+                print_env(API_KEY, API_SECRET, DOMAIN)
+            return API_KEY, API_SECRET, DOMAIN
+    except (errors.InitError, TypeError):
+        colorize("red", "Failed to retrieve environment variables from keyring")
+
+
+def main():
+    # try .env file and env vars first
+    if get_env() is not None:
+        API_KEY, API_SECRET, DOMAIN = get_env()
+    else:
+        # retrieve and set the API key, API secret, and domain values
+        if get_keyring():
+            API_KEY, API_SECRET, DOMAIN = get_keyring(silent=False)
+        else:
+            API_KEY = getpass("Enter your GoDaddy API Key: ")
+            API_SECRET = getpass("Enter your GoDaddy API Secret: ")
+            DOMAIN = input("Enter your GoDaddy Domain: ")
+            set_keyring(API_KEY, API_SECRET, DOMAIN)
+
+    return API_KEY, API_SECRET
+
+
+if __name__ == "__main__":
+    main()

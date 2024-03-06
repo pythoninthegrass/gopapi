@@ -3,9 +3,9 @@
 import json
 import sys
 import os
-from .api import API
+from gopappy.api import API
+from gopappy.colorize import colorize
 from argparse import ArgumentParser # TODO: switch to typer
-# from crypto import cipher_auth, decipher_auth
 
 
 def handle_domain(args):
@@ -18,10 +18,15 @@ def handle_domain(args):
         response = api.get('domains/{}/records'.format(domain))
         data = response.json()
 
-        for record in data:
-            if not args.only_type \
-            or record['type'].lower() == args.only_type.lower():
-                print(f"{record['type']: <10}{record['name']: <20}{record['data']}")
+        try:
+            for record in data:
+                if not args.only_type \
+                or record['type'].lower() == args.only_type.lower():
+                    print(f"{record['type']: <10}{record['name']: <20}{record['data']}")
+        except TypeError as e:
+            colorize("red", f"Domain:\t{domain}")
+            colorize("red", f"Error:\t{e}")
+
 
     elif action == 'add-record':
         url = 'domains/{}/records'.format(domain)
@@ -43,7 +48,6 @@ def handle_domain(args):
         url = 'domains/suggest'
         domains = args.data[0].split(',')
         response = api.get(url, tlds=domains)
-        # print(response.content)
 
     elif action == 'available' or action == 'check':
         response = api.get('domains/available', domain=domain)
@@ -61,11 +65,13 @@ def main():
     # DOMAIN
     domain_parser = subparsers.add_parser('domain')
 
-    domain_parser.add_argument('domain', nargs=1,
+    domain_parser.add_argument('domain',
+                               nargs=1,
                                help=('Domain to be managed. '
                                      'e.g. mydomain.com')
                                )
-    domain_parser.add_argument('action', nargs=1,
+    domain_parser.add_argument('action',
+                               nargs=1,
                                help='What to do with the domain')
     domain_parser.add_argument('data', nargs='*')
     domain_parser.add_argument('-t', dest='only_type')

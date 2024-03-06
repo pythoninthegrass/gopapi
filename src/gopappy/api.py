@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import requests
-from . import auth
+from gopappy.auth import main as auth
+
+API_KEY, API_SECRET = auth()
 
 
 class API:
@@ -20,8 +22,8 @@ class API:
 
     def get(self, path, **params):
         headers = {
-            'Authorization': 'sso-key {}:{}'.format(
-                auth.API_KEY, auth.API_SECRET
+            'Authorization': 'sso-key {}:{}'.format(API_KEY,
+                                                    API_SECRET
             )
         }
         url = '{}/{}'.format(self.api_url, path)
@@ -29,7 +31,8 @@ class API:
 
     def patch(self, path, **kwargs):
         headers = {
-            "Authorization": "sso-key {}:{}".format(auth.API_KEY, auth.API_SECRET),
+            "Authorization": "sso-key {}:{}".format(API_KEY,
+                                                    API_SECRET),
             "Content-Type": "application/json",
         }
         url = '{}/{}'.format(self.api_url, path)

@@ -3,9 +3,11 @@
 import json
 import sys
 import os
+import typer
 from gopappy.api import API
 from gopappy.colorize import colorize
-from argparse import ArgumentParser # TODO: switch to typer
+
+app = typer.Typer()
 
 
 def handle_domain(args):
@@ -59,41 +61,55 @@ def handle_domain(args):
 
 
 def main():
-    parser = ArgumentParser()
-    subparsers = parser.add_subparsers(dest='entity')
+    @app.command()
+    def domain(
+        domain: str = typer.Argument(..., help="Domain to be managed. e.g. mydomain.com"),
+        action: str = typer.Argument(..., help="What to do with the domain"),
+        data: list[str] = typer.Argument([], help="Additional data"),
+        only_type: str = typer.Option(None, "-t", help="Filter by record type"),
+    ):
+        api = API.shared()
+        if action == 'records':
+            response = api.get(f"domains/{domain}/records")
+            data = response.json()
+            try:
+                for record in data:
+                    if not only_type or record['type'].lower() == only_type.lower():
+                        print(f"{record['type']: <10}{record['name']: <20}{record['data']}")
+            except TypeError as e:
+                colorize("red", f"Domain:\t{domain}")
+                colorize("red", f"Error:\t{e}")
+        elif action == 'add-record':
+            url = f"domains/{domain}/records"
+            params = [
+                {
+                    'type': data[0].upper(),   # A / CNAME
+                    'name': data[1],           # fulano., mangano.
+                    'data': data[2],           # points to ip/domain
+                }
+            ]
+            response = api.patch(url, data=json.dumps(params))
+            if response.status_code != 200:
+                info = response.json()
+                print(info['code'], file=sys.stderr)
+                sys.exit(1)
+        elif action == 'suggest':
+            url = 'domains/suggest'
+            domains = data[0].split(',')
+            response = api.get(url, tlds=domains)
+        elif action == 'available' or action == 'check':
+            response = api.get('domains/available', domain=domain)
+            data = response.json()
+            if data['available']:
+                print('available')
+            else:
+                print('not available')
 
-    # DOMAIN
-    domain_parser = subparsers.add_parser('domain')
-
-    domain_parser.add_argument('domain',
-                               nargs=1,
-                               help=('Domain to be managed. '
-                                     'e.g. mydomain.com')
-                               )
-    domain_parser.add_argument('action',
-                               nargs=1,
-                               help='What to do with the domain')
-    domain_parser.add_argument('data', nargs='*')
-    domain_parser.add_argument('-t', dest='only_type')
-
-    # DOMAINS
-    domains_parser = subparsers.add_parser('domains')
-    domains_parser.add_argument('-status', dest='status', default='active')
-
-    api = API.shared()
-    args = parser.parse_args()
-
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(0)
-
-    if args.entity == 'domain':
-        handle_domain(args)
-
-    elif args.entity == 'domains':
+    @app.command()
+    def domains(status: str = typer.Option("active", "-status", help="Filter by domain status")):
+        api = API.shared()
         data = api.get('/domains')
-        status = args.status.upper() if args.status else ''
-
+        status = status.upper() if status else ''
         for domain in data.json():
             if status:
                 if domain['status'] == status:
@@ -102,5 +118,5 @@ def main():
                 print(domain['domain'])
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    app()

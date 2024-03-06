@@ -30,6 +30,7 @@ tasks:
             echo "Invalid repository"
             ;;
         esac
+    run: once
     silent: true
 
   build:
@@ -41,6 +42,11 @@ tasks:
     desc: "Install project dependencies"
     cmds:
       - poetry install --no-ansi
+
+  bump-version:
+    desc: "Bump the project version for alpha releases"
+    cmds:
+      - poetry version prerelease --no-ansi
 
   publish:
     desc: "Publish the poetry bin"

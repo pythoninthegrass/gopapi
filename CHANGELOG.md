@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/pythoninthegrass/gopappy/compare/v1.4.1...v1.5.0) (2024-03-07)
+
+
+### Features
+
+* Add version flag ([c7bd0d5](https://github.com/pythoninthegrass/gopappy/commit/c7bd0d509aa5ed6f285a8d3baff0df245a6a6467))
+
+
+### Documentation
+
+* Update description ([b6e19a3](https://github.com/pythoninthegrass/gopappy/commit/b6e19a348496af68e6703399e7dca4453080ca67))
+
 ## [1.4.1](https://github.com/pythoninthegrass/gopappy/compare/v1.4.0...v1.4.1) (2024-03-07)
 
 

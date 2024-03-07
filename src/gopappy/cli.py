@@ -71,18 +71,23 @@ def domain(
 @app.command()
 def domains(
     status: str = typer.Option("active",
-                               "-status",
                                help="Filter by domain status")
 ):
     api = API.shared()
     data = api.get('/domains')
     status = status.upper() if status else ''
     for domain in data.json():
-        if status:
+        if status != '':
             if domain['status'] == status:
-                print(domain['domain'])
+                colorize("green", f"[DOMAIN] {domain['domain']}")
+                colorize("green", f"[STATUS] {domain['status']}")
+            else:
+                colorize("green", f"[DOMAIN] {domain['domain']}")
+                colorize("red", f"[STATUS] {domain['status']}")
         else:
-            print(domain['domain'])
+            colorize("white", f"[DOMAIN] {domain['domain']}")
+            colorize("white", f"[STATUS] {domain['status']}")
+
 
 
 def version_callback(value: bool):

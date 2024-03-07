@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/pythoninthegrass/gopappy/compare/v1.4.1...v1.4.2) (2024-03-07)
+
+
+### Documentation
+
+* Update description ([b6e19a3](https://github.com/pythoninthegrass/gopappy/commit/b6e19a348496af68e6703399e7dca4453080ca67))
+
 ## [1.4.1](https://github.com/pythoninthegrass/gopappy/compare/v1.4.0...v1.4.1) (2024-03-07)
 
 

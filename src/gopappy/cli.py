@@ -14,10 +14,15 @@ app = typer.Typer()
 
 @app.command()
 def domain(
-    domain: str = typer.Argument(..., help="Domain to be managed. e.g. mydomain.com"),
-    action: str = typer.Argument(..., help="What to do with the domain"),
-    data: Optional[list[str]] = typer.Argument(None, help="Additional data"),
-    only_type: Optional[str] = typer.Option(None, "--type", "-t", help="Filter by record type"),
+    domain: str = typer.Argument(...,
+                                 help="Domain to be managed. e.g. mydomain.com"),
+    action: str = typer.Argument(...,
+                                 help="What to do with the domain"),
+    data: Optional[list[str]] = typer.Argument(None,
+                                               help="Additional data"),
+    only_type: Optional[str] = typer.Option(None,
+                                            "--type", "-t",
+                                            help="Filter by record type"),
 ):
     api = API.shared()
 
@@ -64,7 +69,11 @@ def domain(
 
 
 @app.command()
-def domains(status: str = typer.Option("active", "-status", help="Filter by domain status")):
+def domains(
+    status: str = typer.Option("active",
+                               "-status",
+                               help="Filter by domain status")
+):
     api = API.shared()
     data = api.get('/domains')
     status = status.upper() if status else ''

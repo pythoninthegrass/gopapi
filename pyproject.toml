@@ -11,7 +11,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.scripts]
-gopappy = "gopappy.cli:main"
+gopappy = "gopappy.cli:app"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.13"

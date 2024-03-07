@@ -18,14 +18,14 @@
       "env": {
         "PYDEVD_DISABLE_FILE_VALIDATION": "1"
       },
-      // "args": ["-h"]
-      "args": [
-        "domain",
-        "acme.com",
-        "records",
-        "-t",
-        "A"
-      ]
+      "args": ["-v"]
+      // "args": [
+      //   "domain",
+      //   "acme.com",
+      //   "records",
+      //   "-t",
+      //   "A"
+      // ]
     },
     {
       "name": "Python: Django",

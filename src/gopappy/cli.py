@@ -76,13 +76,21 @@ def domains(status: str = typer.Option("active", "-status", help="Filter by doma
             print(domain['domain'])
 
 
-# @app.command()
-# def version(
-#     version: bool = typer.Option(None, "--version", "-V", help="Print the version"),
-# ):
-#     if version:
-#         print(__version__)
-#         sys.exit(0)
+def version_callback(value: bool):
+    if value:
+        print(__version__)
+        raise typer.Exit()
+
+
+@app.callback()
+def version(
+    version: bool = typer.Option(None,
+                                 "--version", "-v",
+                                 callback=version_callback,
+                                 is_eager=True,
+                                 help="Print the version and exit")
+):
+    pass
 
 
 if __name__ == "__main__":

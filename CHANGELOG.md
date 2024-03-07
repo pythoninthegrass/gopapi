@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/pythoninthegrass/gopappy/compare/v1.4.0...v1.4.1) (2024-03-07)
+
+
+### Bug Fixes
+
+* positional keyword arguments ([c0af404](https://github.com/pythoninthegrass/gopappy/commit/c0af404c802095cf781837d8318f58d9f0694937))
+* script entrypoint ([f43c4a3](https://github.com/pythoninthegrass/gopappy/commit/f43c4a30442c1c5c411b2320d1945cdfe6184c6a))
+
 ## [1.4.0](https://github.com/pythoninthegrass/gopappy/compare/v1.3.0...v1.4.0) (2024-03-06)
 
 

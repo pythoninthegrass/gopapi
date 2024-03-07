@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/pythoninthegrass/gopappy/compare/v1.5.0...v1.5.1) (2024-03-07)
+
+
+### Bug Fixes
+
+* Domain status output ([47ae43b](https://github.com/pythoninthegrass/gopappy/commit/47ae43be93b3e0a0e5fcac658086d19b6e6db37c))
+
 ## [1.5.0](https://github.com/pythoninthegrass/gopappy/compare/v1.4.1...v1.5.0) (2024-03-07)
 
 

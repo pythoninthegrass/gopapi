@@ -19,7 +19,8 @@ def domain(
     action: str = typer.Argument(...,
                                  help="What to do with the domain"),
     data: Optional[list[str]] = typer.Argument(None,
-                                               help="Additional data"),
+                                               help="""add-record: [type, name, data]
+                                               delete-record: [type, name]"""),
     only_type: Optional[str] = typer.Option(None,
                                             "--type", "-t",
                                             help="Filter by record type"),
@@ -53,6 +54,19 @@ def domain(
             info = response.json()
             print(info["code"], file=sys.stderr)
             sys.exit(1)
+
+    # TODO: test on real domain
+    elif action == "delete-record":
+        url = "domains/{}/records/{}".format(domain, data[0].upper())
+        confirm = typer.confirm("Are you sure you want to delete this record?")
+        if confirm:
+            response = api.delete(url)
+            if response.status_code != 200:
+                info = response.json()
+                print(info["code"], file=sys.stderr)
+                sys.exit(1)
+        else:
+            print("Deletion cancelled.")
 
     elif action == "suggest":
         url = "domains/suggest"

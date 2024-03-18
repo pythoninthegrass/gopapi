@@ -5,6 +5,11 @@ from gopappy.auth import main as auth
 
 API_KEY, API_SECRET = auth()
 
+headers = {
+    'Authorization': 'sso-key {}:{}'.format(API_KEY,
+                                            API_SECRET
+    )
+}
 
 class API:
     api_url = 'https://api.godaddy.com/v1'
@@ -21,19 +26,13 @@ class API:
         return cls._shared
 
     def get(self, path, **params):
-        headers = {
-            'Authorization': 'sso-key {}:{}'.format(API_KEY,
-                                                    API_SECRET
-            )
-        }
         url = '{}/{}'.format(self.api_url, path)
         return requests.get(url, headers=headers, params=params)
 
     def patch(self, path, **kwargs):
-        headers = {
-            "Authorization": "sso-key {}:{}".format(API_KEY,
-                                                    API_SECRET),
-            "Content-Type": "application/json",
-        }
         url = '{}/{}'.format(self.api_url, path)
         return requests.patch(url, headers=headers, **kwargs)
+
+    def delete(self, path):
+        url = '{}/{}'.format(self.api_url, path)
+        return requests.delete(url, headers=headers)

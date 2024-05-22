@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/pythoninthegrass/gopappy/compare/v1.6.2...v1.6.3) (2024-05-22)
+
+
+### Bug Fixes
+
+* --no-root arg ([2d6d8ad](https://github.com/pythoninthegrass/gopappy/commit/2d6d8ad4b31a8de3ba90b29aed1d234c81bea44b))
+
 ## [1.6.2](https://github.com/pythoninthegrass/gopappy/compare/v1.6.1...v1.6.2) (2024-05-22)
 
 

@@ -14,14 +14,10 @@ python -m pip install gopappy
 
 ```bash
 # A record
-gopappy domain $DOMAIN add-record A subdomain 127.0.0.1
-# Where A can also be CNAME
-# 127.0.0.1 to be replaced with the actual IP
+gopappy add-record $DOMAIN -t A -n subdomain 127.0.0.1
 
 # CNAME
-gopappy add-record $DOMAIN -t A -n subdomain -d 127.0.0.1
-# Where A can also be CNAME
-# 127.0.0.1 to be replaced with the actual IP
+gopappy add-record $DOMAIN -t CNAME -n www -d $DOMAIN
 
 # TXT
 gopappy add-record $DOMAIN -t TXT -n subdomain -d "some text here"

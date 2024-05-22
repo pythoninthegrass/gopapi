@@ -8,6 +8,7 @@ from gopappy.api import API
 from gopappy.colorize import colorize
 from gopappy import __version__
 from typing import Optional
+from urllib.parse import urlencode
 
 app = typer.Typer()
 
@@ -69,15 +70,18 @@ def delete_record(
     name: str = typer.Option(..., "--name", "-n", help="Record name"),
 ):
     api = API.shared()
+
+    print(f"Domain: {domain}")
+    print(f"Type: {type_}")
+    print(f"Name: {name}")
+
     confirm = typer.confirm("Are you sure you want to delete this record?")
     if confirm:
         url = f"domains/{domain}/records/{type_}/{name}"
         response = api.delete(url)
 
-        print(f"Domain: {domain}")
-        print(f"Type: {type_}")
-        print(f"Name: {name}")
-
+        # TODO: status code not being 200 w/successful deletion
+        # * ./cli.py delete-record $DOMAIN -t A -n subdomain
         if response.status_code != 200:
             try:
                 info = response.json()
@@ -87,6 +91,55 @@ def delete_record(
             sys.exit(1)
         else:
             print("Record deleted successfully.")
+
+
+@app.command()
+def domains(status: str = typer.Option("active", help="Filter by domain status")):
+    api = API.shared()
+    data = api.get("/domains")
+    status = status.upper() if status else ""
+    for domain in data.json():
+        if status != "":
+            if domain["status"] == status:
+                colorize("green", f"[DOMAIN] {domain['domain']}")
+                colorize("green", f"[STATUS] {domain['status']}")
+            else:
+                colorize("green", f"[DOMAIN] {domain['domain']}")
+                colorize("red", f"[STATUS] {domain['status']}")
+        else:
+            colorize("white", f"[DOMAIN] {domain['domain']}")
+            colorize("white", f"[STATUS] {domain['status']}")
+
+
+# TODO
+# ! {'code': 'ACCESS_DENIED', 'message': 'Authenticated user is not allowed access'}
+@app.command("check")
+def check_availability(domain: str = typer.Argument(..., help="Domain to check")):
+    api = API.shared()
+    params = urlencode({
+        "domain": domain,
+        "checkType": "FAST",
+        "forTransfer": "false"
+    })
+    url = f"domains/available?{params}"
+    data = [domain]
+    response = api.get(url, json=data)
+    print(response.json())
+
+
+def _version_callback(value: bool):
+    if value:
+        print(__version__)
+        raise typer.Exit()
+
+
+@app.callback()
+def version(
+    version: bool = typer.Option(
+        None, "--version", "-v", callback=_version_callback, is_eager=True, help="Print the version and exit"
+    ),
+):
+    pass
 
 
 if __name__ == "__main__":

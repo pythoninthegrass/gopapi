@@ -55,18 +55,23 @@ def domain(
             print(info["code"], file=sys.stderr)
             sys.exit(1)
 
-    # TODO: test on real domain
     elif action == "delete-record":
-        url = "domains/{}/records/{}".format(domain, data[0].upper())
-        confirm = typer.confirm("Are you sure you want to delete this record?")
-        if confirm:
-            response = api.delete(url)
-            if response.status_code != 200:
-                info = response.json()
-                print(info["code"], file=sys.stderr)
-                sys.exit(1)
+        if data and len(data) >= 2:
+            record_type, record_name = data[:2]
+            confirm = typer.confirm("Are you sure you want to delete this record?")
+            if confirm:
+                url = f"domains/{domain}/records/{record_type}/{record_name}"
+                response = api.delete(url)
+                if response.status_code != 200:
+                    try:
+                        info = response.json()
+                        print(info["code"], file=sys.stderr)
+                    except ValueError:
+                        print(f"Failed to decode JSON response: {response.text}", file=sys.stderr)
+                else:
+                    print("Record deleted successfully.")
         else:
-            print("Deletion cancelled.")
+            print("Insufficient data provided for deleting the record. Please provide [type, name].", file=sys.stderr)
 
     elif action == "suggest":
         url = "domains/suggest"
@@ -80,6 +85,9 @@ def domain(
             print("available")
         else:
             print("not available")
+
+    else:
+        print("Unsupported action")
 
 
 @app.command()

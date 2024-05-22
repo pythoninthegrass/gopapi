@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/pythoninthegrass/gopappy/compare/v1.5.1...v1.6.0) (2024-05-22)
+
+
+### Features
+
+* delete-record (wip) ([a48e5c9](https://github.com/pythoninthegrass/gopappy/commit/a48e5c97cd05f36f4907f8c31329c1f6df41926a))
+
+
+### Bug Fixes
+
+* delete records ([1b2a42d](https://github.com/pythoninthegrass/gopappy/commit/1b2a42d24a130d89f2b3a49a8feb56613a4f300b))
+
 ## [1.5.1](https://github.com/pythoninthegrass/gopappy/compare/v1.5.0...v1.5.1) (2024-03-07)
 
 

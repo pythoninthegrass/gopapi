@@ -10,7 +10,7 @@ tasks:
       - task --list
 
   add-pypi:
-    desc: "Add test-pypi repository"
+    desc: "Add pypi or test-pypi repository"
     cmds:
       - |
         case {{.CLI_ARGS}} in

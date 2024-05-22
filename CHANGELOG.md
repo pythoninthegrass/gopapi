@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.1](https://github.com/pythoninthegrass/gopappy/compare/v1.6.0...v1.6.1) (2024-05-22)
+
+
+### Bug Fixes
+
+* txt records ([125cf11](https://github.com/pythoninthegrass/gopappy/commit/125cf110bd4f87bc80ccf827e39ad76ba4583fb6))
+
+
+### Documentation
+
+* Update README.md ([230bf3c](https://github.com/pythoninthegrass/gopappy/commit/230bf3c02541a8fd412e128504bbdce6eff17fe2))
+
 ## [1.6.0](https://github.com/pythoninthegrass/gopappy/compare/v1.5.1...v1.6.0) (2024-05-22)
 
 

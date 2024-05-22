@@ -135,8 +135,11 @@ def _version_callback(value: bool):
 
 @app.callback()
 def version(
-    version: bool = typer.Option(
-        None, "--version", "-v", callback=_version_callback, is_eager=True, help="Print the version and exit"
+    version: bool = typer.Option(None,
+                                 "--version", "-v",
+                                 callback=_version_callback,
+                                 is_eager=True,
+                                 help="Print the version and exit"
     ),
 ):
     pass

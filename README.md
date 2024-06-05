@@ -14,7 +14,7 @@ python -m pip install gopappy
 
 ```bash
 # A record
-gopappy add-record $DOMAIN -t A -n subdomain 127.0.0.1
+gopappy add-record $DOMAIN -t A -n subdomain -d 127.0.0.1
 
 # CNAME
 gopappy add-record $DOMAIN -t CNAME -n www -d $DOMAIN

@@ -5,7 +5,7 @@ Inspo from [here](https://github.com/gamikun/gopapi).
 ## Installation
 
 ```bash
-python -m pip install gopappy
+python -m pip install -U gopappy
 ```
 
 ## Usage

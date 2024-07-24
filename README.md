@@ -10,6 +10,14 @@ python -m pip install -U gopappy
 
 ## Usage
 
+### Authentication
+
+* Run `gopappy` to setup authentication
+* Three values are [needed to authenticate](https://developer.godaddy.com/keys):
+  * API Key
+  * API Secret
+  * Domain
+
 ### Adding a DNS record to a domain
 
 ```bash
@@ -52,3 +60,24 @@ gopappy domains
 ```bash
 gopappy check $DOMAIN 
 ```
+
+## TODO
+
+* Control for no arguments (e.g., call `--help`)
+    ```bash
+    λ gopappy
+    Failed to retrieve environment variables from keyring
+    Enter your GoDaddy API Key:
+    Enter your GoDaddy API Secret:
+    Enter your GoDaddy Domain: testytesterson.com
+    Successfully set environment variables in keyring!
+
+    Usage: gopappy [OPTIONS] COMMAND [ARGS]...
+    Try 'gopappy --help' for help.
+    ╭─ Error ───────────────────────────────────────────────────────────────────────────────────────────────────╮
+    │ Missing command.                                                                                          │
+    ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+    ```
+* Add subcommand to manage `auth`
+  * CRUD

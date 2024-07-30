@@ -8,13 +8,12 @@ dotenv: ['.env']
 env:
   TLD:
     sh: "echo {{.TASKFILE_DIR}}"            # absolute path
-    # sh: "basename ${{.TASKFILE_DIR}}"     # directory name
   APP:
-    sh: echo "${APP_NAME:-mvp}"
+    sh: echo "${APP_NAME:-gopappy}"
   POETRY:
-    sh: "echo ${POETRY:-1.7.1}"
+    sh: "echo ${POETRY:-1..8.3}"
   PY_VER:
-    sh: "echo ${PY_VER:-3.11.6}"
+    sh: "echo ${PY_VER:-3.11.9}"
   SCRIPT:
   UNAME:
     sh: "uname -s"
@@ -54,9 +53,9 @@ tasks:
 
   install:
     desc: "Install project dependencies"
+    dir: "{{.TLD}}"
     cmds:
-      - |
-        make install
+      - ./bootstrap
 
   pre-commit:
     desc: "Run pre-commit hooks"

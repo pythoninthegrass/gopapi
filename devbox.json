@@ -1,27 +1,28 @@
 {
   "packages": [
-    "python@3.11.6",
+    "python@3.11.9",
     "python311Packages.pip@latest",
-    "poetry@latest",
     "asdf-vm@latest",
-    "docker@latest",
-    "gh@latest",
     "git@latest",
-    "gnumake@latest",
     "go-task@latest",
-    "nodejs@21.4.0",
-    "openssl@latest"
+    "openssl@latest",
+    "poetry@latest",
+    "uv@latest"
   ],
   "env": {
-    "VENV_DIR": ".venv"
+    "VENV_DIR": ".venv",
+    "UV_HTTP_TIMEOUT": "150"
   },
   "shell": {
     "init_hook": [
       ". $VENV_DIR/bin/activate",
-      "poetry install --no-root"
+      "uv pip install -r requirements.txt"
     ],
     "scripts": {
-      "test":  "poetry run pytest"
+      "install": "uv pip install -r requirements.txt",
+      "export-reqs": "uv pip freeze | uv pip compile - -o requirements.txt",
+      "venv": "uv venv ${VENV_DIR} --allow-existing",
+      "test": "pytest"
     }
   }
 }

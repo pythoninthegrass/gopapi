@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import json
-import sys
 import os
+import sys
 import typer
 from gopappy.api import API
 from gopappy.colorize import colorize
@@ -145,5 +145,11 @@ def version(
     pass
 
 
-if __name__ == "__main__":
+def main():
+    if len(sys.argv) == 1:
+        sys.argv.append("--help")
     app()
+
+
+if __name__ == "__main__":
+    main()

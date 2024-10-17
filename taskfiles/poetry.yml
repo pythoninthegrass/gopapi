@@ -76,18 +76,27 @@ tasks:
       Set the release version manually in git.
 
       USAGE
-        task poetry:release-please
-    deps: ["bump-semver"]
+        task poetry:release             # Bump the version to prerelease
+        task poetry:release -- major    # Bump the version to major
+
+      NOTE
+        Have to get the poetry version twice otherwise __init__.py is
+        hit with a race condition (i.e., the dynamic variable is set before
+        the version is updated).
     aliases: ["release-please", "really", "plz"]
     cmds:
+      - task: bump-semver
       - |
-        VERSION=$(
-          cat pyproject.toml \
-          | awk '/^version/ {print $NF}' \
-          | tr -d '"' \
-        )
-        git add pyproject.toml
+        VERSION=$(poetry version -s)
+        sed -i -e 's#__version__ = .*#__version__ = '"$(cat <<EOF
+        '${VERSION}'
+        EOF
+        )"'#' src/*/__init__.py
+      - |
+        VERSION=$(poetry version -s)
+        git add pyproject.toml src/*/__init__.py
         git commit \
+          --allow-empty \
           -m "chore: release ${VERSION}" \
           -m "Release-As: ${VERSION}" \
           --no-verify
@@ -129,7 +138,7 @@ tasks:
     cmds:
       - |
         poetry export -f requirements.txt \
-          --output {{.TLD}}/requirements.txt \
+          --output {{.ROOT_DIR}}/requirements.txt \
           --without-hashes \
           --no-ansi
     ignore_error: true

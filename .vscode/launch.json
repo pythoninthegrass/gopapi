@@ -18,57 +18,12 @@
       "env": {
         "PYDEVD_DISABLE_FILE_VALIDATION": "1"
       },
-      "args": ["-v"]
       // "args": [
-      //   "domain",
-      //   "acme.com",
       //   "records",
+      //   "example.com",
       //   "-t",
       //   "A"
       // ]
-    },
-    {
-      "name": "Python: Django",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/manage.py",
-      "console": "integratedTerminal",
-      "args": [
-        "runserver"
-      ],
-      "django": true,
-      "justMyCode": true
-    },
-    {
-      "name": "Python: Flask",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/.venv/bin/flask",
-      "console": "integratedTerminal",
-      "args": [
-        "run",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8000"
-      ],
-      "justMyCode": true
-    },
-    {
-      "name": "Python: Flet",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/.venv/bin/flet",
-      "console": "integratedTerminal",
-      "args": [
-        "run",
-        "main.py",
-        "-d"
-      ],
-      "env": {
-        "PYDEVD_DISABLE_FILE_VALIDATION": "1",
-      },
-      "justMyCode": true
     },
     {
       "name": "Python: Debug Tests",
@@ -79,18 +34,6 @@
         "${file}"
       ],
       "console": "integratedTerminal"
-    },
-    {
-      "name": "Node: Current File",
-      "type": "node",
-      "request": "launch",
-      "program": "${file}",
-      "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      // "runtimeExecutable": "${env:HOME}/.n/bin/node"
     }
-  ],
-  "ansible.python.interpreterPath": "${workspaceFolder}/.venv/bin/python"
+  ]
 }

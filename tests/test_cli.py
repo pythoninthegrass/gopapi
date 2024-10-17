@@ -137,6 +137,7 @@ def test_check_availability(mock_api):
     assert "{'available': True, 'price': 10.99}" in result.output
 
 def test_version():
+    import gopappy
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
     assert result.output.strip() == gopappy.__version__

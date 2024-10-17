@@ -29,7 +29,7 @@ def records(
     try:
         for record in records:
             if not only_type or record["type"].lower() == only_type.lower():
-                print(f"{record['type']: <10}{record['name']: <{name_width}}{record['data']}")
+                print(f"{record['type']:<10}{record['name']:<{name_width + 2}}{record['data']}")
     except TypeError as e:
         colorize("red", f"Domain:\t{domain}")
         colorize("red", f"Error:\t{e}")
@@ -58,7 +58,7 @@ def add_record(
             print(info["code"], file=sys.stderr)
         except ValueError:
             print(f"Failed to decode JSON response: {response.text}", file=sys.stderr)
-        sys.exit(1)
+        exit(1)
     else:
         print("Record added successfully.")
 
@@ -80,17 +80,27 @@ def delete_record(
         url = f"domains/{domain}/records/{type_}/{name}"
         response = api.delete(url)
 
-        # TODO: status code not being 200 w/successful deletion
-        # * ./cli.py delete-record $DOMAIN -t A -n subdomain
-        if response.status_code != 200:
+        print(f"Response status code: {response.status_code}")
+
+        if response.text:
+            print(f"Response text: {response.text}")
+        else:
+            print("Response text: Empty")
+
+        if response.status_code in [200, 204]:
+            print("Record deleted successfully.")
+        else:
             try:
                 info = response.json()
-                print(info["code"], file=sys.stderr)
-            except ValueError:
-                print(f"Failed to decode JSON response: {response.text}", file=sys.stderr)
-            sys.exit(1)
-        else:
-            print("Record deleted successfully.")
+                print(f"Error: {info.get('code', 'Unknown error')}", file=sys.stderr)
+                print(f"Message: {info.get('message', 'No message provided')}", file=sys.stderr)
+            except json.JSONDecodeError:
+                print(f"Failed to decode JSON response. Status code: {response.status_code}", file=sys.stderr)
+                if response.text:
+                    print(f"Response text: {response.text}", file=sys.stderr)
+                else:
+                    print("Response text: Empty", file=sys.stderr)
+            exit(1)
 
 
 @app.command()
@@ -99,16 +109,10 @@ def domains(status: str = typer.Option("active", help="Filter by domain status")
     data = api.get("/domains")
     status = status.upper() if status else ""
     for domain in data.json():
-        if status != "":
-            if domain["status"] == status:
-                colorize("green", f"[DOMAIN] {domain['domain']}")
-                colorize("green", f"[STATUS] {domain['status']}")
-            else:
-                colorize("green", f"[DOMAIN] {domain['domain']}")
-                colorize("red", f"[STATUS] {domain['status']}")
-        else:
-            colorize("white", f"[DOMAIN] {domain['domain']}")
-            colorize("white", f"[STATUS] {domain['status']}")
+        if status == "" or domain["status"] == status:
+            color = "green" if domain["status"] == status else "red"
+            colorize(color, f"[DOMAIN] {domain['domain']}")
+            colorize(color, f"[STATUS] {domain['status']}")
 
 
 # TODO
@@ -147,8 +151,9 @@ def version(
 
 def main():
     if len(sys.argv) == 1:
-        sys.argv.append("--help")
-    app()
+        app(["--help"])
+    else:
+        app(sys.argv[1:])
 
 
 if __name__ == "__main__":

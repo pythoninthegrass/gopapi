@@ -6,46 +6,19 @@ shopt: ['globstar']
 dotenv: ['.env']
 
 env:
-  TLD:
-    sh: "echo {{.TASKFILE_DIR}}"            # absolute path
+  TLD: "{{.ROOT_DIR}}"
   APP:
     sh: echo "${APP_NAME:-gopappy}"
-  POETRY:
-    sh: "echo ${POETRY:-1..8.3}"
-  PY_VER:
-    sh: "echo ${PY_VER:-3.11.9}"
-  SCRIPT:
-  UNAME:
-    sh: "uname -s"
 
 vars:
 
 includes:
   docker:
-    taskfile: ./tasks/docker.yml
-    aliases: ["docker"]
+    taskfile: ./taskfiles/docker.yml
   poetry:
-    taskfile: ./tasks/poetry.yml
-    aliases: ["poetry"]
+    taskfile: ./taskfiles/poetry.yml
 
 tasks:
-  print:
-    - |
-      echo -e "TLD:\t\t$TLD"
-      echo -e "APP:\t\t{{.APP}}"
-      echo -e "BUILD:\t\t{{.BUILD}}"
-      echo -e "COMPOSE_FILE:\t{{.COMPOSE_FILE}}"
-      echo -e "DOCKERFILE:\t{{.DOCKERFILE}}"
-      echo -e "PLATFORM:\t{{.PLATFORM}}"
-      echo -e "POETRY:\t\t{{.POETRY}}"
-      echo -e "PY_VER:\t\t{{.PY_VER}}"
-      echo -e "SCRIPT:\t\t{{.SCRIPT}}"
-      echo -e "REGISTRY:\t$REGISTRY"
-      echo -e "SERVICE:\t{{.SERVICE}}"
-      echo -e "TAG:\t\t${TAG}"
-      echo -e "USER_NAME:\t$USER_NAME"
-      echo -e "UNAME:\t\t$UNAME"
-
   default:
     desc: "Default task"
     cmds:

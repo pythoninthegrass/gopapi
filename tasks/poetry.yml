@@ -47,7 +47,12 @@ tasks:
     desc: "Bump the project semantic version"
     cmds:
       - |
-        case {{.CLI_ARGS}} in
+        if [[ -n "{{.CLI_ARGS}}" ]]; then
+          args="{{.CLI_ARGS}}"
+        else
+          args="prerelease"
+        fi
+        case $args in
           "major")
             poetry version major --no-ansi
             ;;
@@ -60,10 +65,32 @@ tasks:
           "prerelease")
             poetry version prerelease --no-ansi
             ;;
-          *|"")
+          *)
             echo "Invalid version"
             ;;
         esac
+
+  release:
+    desc: "Set the release version manually"
+    summary: |
+      Set the release version manually in git.
+
+      USAGE
+        task poetry:release-please
+    deps: ["bump-semver"]
+    aliases: ["release-please", "really", "plz"]
+    cmds:
+      - |
+        VERSION=$(
+          cat pyproject.toml \
+          | awk '/^version/ {print $NF}' \
+          | tr -d '"' \
+        )
+        git commit \
+          --allow-empty \
+          -m "chore: release ${VERSION}" \
+          -m "Release-As: ${VERSION}" \
+          --no-verify
 
   publish:
     desc: "Publish the poetry bin"

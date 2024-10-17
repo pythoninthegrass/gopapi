@@ -139,8 +139,7 @@ def test_check_availability(mock_api):
 def test_version():
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
-    # You may need to update this assertion based on your actual version
-    assert result.output.strip() == "1.6.3"
+    assert result.output.strip() == gopappy.__version__
 
 def test_main_with_no_arguments():
     with patch('sys.argv', ['gopappy']):

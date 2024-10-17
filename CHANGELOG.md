@@ -11,12 +11,6 @@
 
 ### Miscellaneous Chores
 
-* release 1.6.4a0 ([595c962](https://github.com/pythoninthegrass/gopappy/commit/595c962abaf9b8be18f4158604b63ed905893987))
-* release 1.6.4a1 ([52fe9ba](https://github.com/pythoninthegrass/gopappy/commit/52fe9ba7293ec5f44bb45f1e5ce9ef6b1ba1c9bb))
-* release 1.6.4a2 ([20853fa](https://github.com/pythoninthegrass/gopappy/commit/20853fac67c824b06c9da4109fb63c442595c950))
-* release 1.6.5 ([670a4fc](https://github.com/pythoninthegrass/gopappy/commit/670a4fcb062f65c84c5999cc7a62468cba921055))
-* release 1.7.0 ([5e18182](https://github.com/pythoninthegrass/gopappy/commit/5e18182d77d5023340fb40392622a9f17adcd4d0))
-
 ## [1.6.3](https://github.com/pythoninthegrass/gopappy/compare/v1.6.2...v1.6.3) (2024-05-22)
 
 

@@ -18,6 +18,20 @@ from gopappy.cli import app
 runner = CliRunner()
 
 @pytest.fixture
+def mock_env_vars(monkeypatch):
+    monkeypatch.setenv('API_KEY', 'test_key')
+    monkeypatch.setenv('API_SECRET', 'test_secret')
+    monkeypatch.setenv('DOMAIN', 'test.com')
+
+def test_auth(mock_env_vars):
+    from gopappy.auth import get_env
+
+    api_key, api_secret, domain = get_env()
+    assert api_key == 'test_key'
+    assert api_secret == 'test_secret'
+    assert domain == 'test.com'
+
+@pytest.fixture
 def mock_api():
     with patch('gopappy.cli.API') as mock:
         yield mock.shared.return_value

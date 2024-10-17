@@ -15,6 +15,11 @@ on:
       - '**/*.py'
   workflow_dispatch:
 
+env:
+  API_KEY: ${{ secrets.GODADDY_API_KEY }}
+  API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+  DOMAIN: ${{ vars.GODADDY_DOMAIN }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -63,4 +68,8 @@ jobs:
         python -m pip install -r requirements.txt
 
     - name: Run pytest
+      env:
+        API_KEY: ${{ env.API_KEY }}
+        API_SECRET: ${{ env.API_SECRET }}
+        DOMAIN: ${{ env.DOMAIN }}
       run: pytest -s

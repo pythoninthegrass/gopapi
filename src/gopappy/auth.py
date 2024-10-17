@@ -20,14 +20,14 @@ def redact(text):
     return text[:4] + '*' * (len(text) - 8) + text[-4:]
 
 
-# TODO: use colorize instead
 def print_env(key, secret, domain):
     """Print the environment variables."""
-    print(f"{Fore.YELLOW}API_KEY:{Style.RESET_ALL}\t{redact(key)}")
-    print(f"{Fore.YELLOW}API_SECRET:{Style.RESET_ALL}\t{redact(secret)}")
-    print(f"{Fore.YELLOW}DOMAIN:{Style.RESET_ALL}\t\t{domain}\n")
+    colorize("yellow", f"API_KEY:\t{redact(key)}")
+    colorize("yellow", f"API_SECRET:\t{redact(secret)}")
+    colorize("yellow", f"DOMAIN:\t\t{domain}\n")
 
 
+# TODO: .env file isn't read from repo when running pypi library
 def get_env(silent=True):
     """Get environment variables from .env file or from the environment."""
     try:

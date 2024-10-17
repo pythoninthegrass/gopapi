@@ -86,8 +86,8 @@ tasks:
           | awk '/^version/ {print $NF}' \
           | tr -d '"' \
         )
+        git add pyproject.toml
         git commit \
-          --allow-empty \
           -m "chore: release ${VERSION}" \
           -m "Release-As: ${VERSION}" \
           --no-verify

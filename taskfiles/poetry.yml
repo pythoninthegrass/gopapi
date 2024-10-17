@@ -88,12 +88,12 @@ tasks:
       - task: bump-semver
       - |
         VERSION=$(poetry version -s)
+
         sed -i -e 's#__version__ = .*#__version__ = '"$(cat <<EOF
         '${VERSION}'
         EOF
         )"'#' src/*/__init__.py
-      - |
-        VERSION=$(poetry version -s)
+
         git add pyproject.toml src/*/__init__.py
         git commit \
           --allow-empty \

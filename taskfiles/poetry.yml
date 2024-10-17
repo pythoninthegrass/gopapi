@@ -78,11 +78,6 @@ tasks:
       USAGE
         task poetry:release             # Bump the version to prerelease
         task poetry:release -- major    # Bump the version to major
-
-      NOTE
-        Have to get the poetry version twice otherwise __init__.py is
-        hit with a race condition (i.e., the dynamic variable is set before
-        the version is updated).
     aliases: ["release-please", "really", "plz"]
     cmds:
       - task: bump-semver

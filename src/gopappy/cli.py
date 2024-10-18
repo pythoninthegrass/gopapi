@@ -111,6 +111,8 @@ def delete_record(
 ):
     api = get_api()
 
+    type_ = type_.upper()
+
     print(f"Domain: {domain}")
     print(f"Type: {type_}")
     print(f"Name: {name}")

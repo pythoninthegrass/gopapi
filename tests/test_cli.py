@@ -77,14 +77,21 @@ def test_get_credentials_no_env_file(mock_get_env, mock_get_keyring, tmp_path):
     mock_cwd = tmp_path / "gopappy"
     mock_cwd.mkdir()
 
+    mock_prompt = MagicMock(side_effect=["test_key", "test_secret", "test.com"])
+
+    # Set up mock_get_env to return None values
+    mock_get_env.return_value = (None, None, None)
+
     with patch('gopappy.cli.env_file_path', new=None):
         with patch('gopappy.cli.Path.cwd', return_value=mock_cwd):
-            api_key, api_secret, domain = get_credentials()
-            assert api_key == 'test_key'
-            assert api_secret == 'test_secret'
-            assert domain == 'test.com'
-            mock_get_env.assert_called_once_with(None)
-            mock_get_keyring.assert_called_once()
+            api_key, api_secret, domain = get_credentials(prompt_func=mock_prompt)
+
+    assert api_key == "test_key"
+    assert api_secret == "test_secret"
+    assert domain == "test.com"
+    mock_get_env.assert_called_once_with(None)
+    mock_get_keyring.assert_called_once()
+    assert mock_prompt.call_count == 3
 
 def test_records(mock_get_credentials, mock_api):
     mock_api.get.return_value.json.return_value = [

@@ -15,7 +15,7 @@ app = typer.Typer()
 
 env_file_path = None
 
-def get_credentials():
+def get_credentials(prompt_func=typer.prompt):
     global env_file_path
 
     # If env_file_path is provided, use it. Otherwise, check for .env in the current directory
@@ -24,15 +24,14 @@ def get_credentials():
     else:
         env_path = Path.cwd() / '.env'
 
-    if env_path.exists():
-        API_KEY, API_SECRET, DOMAIN = get_env(str(env_path))
-        if API_KEY and API_SECRET and DOMAIN:
-            colorize("green", f"Successfully loaded credentials from {env_path}")
-            return API_KEY, API_SECRET, DOMAIN
-        else:
-            colorize("yellow", f"Incomplete credentials in {env_path}")
+    # Always call get_env, even if the file doesn't exist
+    API_KEY, API_SECRET, DOMAIN = get_env(str(env_path) if env_path.exists() else None)
+
+    if API_KEY and API_SECRET and DOMAIN:
+        colorize("green", f"Successfully loaded credentials from {env_path}")
+        return API_KEY, API_SECRET, DOMAIN
     elif env_file_path:
-        colorize("yellow", f"Specified .env file not found: {env_path}")
+        colorize("yellow", f"Specified .env file not found or incomplete: {env_path}")
 
     # If .env file doesn't exist, is not specified, or is incomplete, try keyring
     keyring_creds = get_keyring(silent=True)
@@ -42,9 +41,9 @@ def get_credentials():
 
     # If no credentials are found, prompt the user
     colorize("yellow", "No credentials found. Please enter your credentials.")
-    API_KEY = typer.prompt("Enter your GoDaddy API Key")
-    API_SECRET = typer.prompt("Enter your GoDaddy API Secret", hide_input=True)
-    DOMAIN = typer.prompt("Enter your GoDaddy Domain")
+    API_KEY = prompt_func("Enter your GoDaddy API Key")
+    API_SECRET = prompt_func("Enter your GoDaddy API Secret", hide_input=True)
+    DOMAIN = prompt_func("Enter your GoDaddy Domain")
 
     # Save to keyring
     set_keyring(API_KEY, API_SECRET, DOMAIN)

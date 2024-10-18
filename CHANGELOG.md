@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1](https://github.com/pythoninthegrass/gopappy/compare/v1.6.5...v1.7.1) (2024-10-18)
+
+
+### Miscellaneous Chores
+
+* release 1.7.1a0 ([d44b6eb](https://github.com/pythoninthegrass/gopappy/commit/d44b6eb458b65da9c4acd899a1a9d35d178c53d8))
+* release 1.7.1a1 ([6582a70](https://github.com/pythoninthegrass/gopappy/commit/6582a7041966d4bfb72d947ddbe606c30dc9a0ca))
+
 ## [1.6.5](https://github.com/pythoninthegrass/gopappy/compare/v1.6.3...v1.6.5) (2024-10-17)
 
 

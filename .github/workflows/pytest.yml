@@ -7,12 +7,16 @@ on:
       - master
     paths:
       - '**/*.py'
+      - 'pyproject.toml'
+      - 'requirements.txt'
   pull_request:
     branches:
       - main
       - master
     paths:
       - '**/*.py'
+      - 'pyproject.toml'
+      - 'requirements.txt'
   workflow_dispatch:
 
 env:
@@ -26,7 +30,6 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
-
     steps:
     - uses: actions/checkout@v4
 

@@ -3,11 +3,16 @@ name: Release Please
 on:
   push:
     branches:
-      - 'main'
+      - main
+      - master
     paths:
       - '**/*.py'
       - '**/*.sh'
       - '**/*.md'
+  workflow_run:
+    workflows: ["Run pytest"]
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -16,7 +21,11 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: true
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Release with release-please
         uses: google-github-actions/release-please-action@v4

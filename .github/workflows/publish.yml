@@ -1,12 +1,9 @@
 name: Publish to PyPI
 
 on:
-  release:
-    types:
-      - created
   workflow_dispatch:
   workflow_run:
-    workflows: ["Run pytest"]
+    workflows: ["Run pytest", "Release Please"]
     types:
       - completed
 
@@ -14,11 +11,11 @@ jobs:
   publish:
     name: Publish to PyPI
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     strategy:
       fail-fast: true
-    concurrency:
-      group: ${{ github.workflow }}-${{ matrix.dockerfile }}-${{ github.event.workflow_run.head_branch || github.ref }}
-      cancel-in-progress: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

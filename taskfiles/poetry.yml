@@ -84,7 +84,7 @@ tasks:
       - |
         VERSION=$(poetry version -s)
 
-        sed -i -e 's#__version__ = .*#__version__ = '"$(cat <<EOF
+        sed -i '' 's#__version__ = .*#__version__ = '"$(cat <<EOF
         '${VERSION}'
         EOF
         )"'#' src/*/__init__.py

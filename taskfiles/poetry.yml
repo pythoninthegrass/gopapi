@@ -40,6 +40,11 @@ tasks:
 
   install:
     desc: "Install project dependencies"
+    summary: |
+      Install the project dependencies using poetry.
+
+      Additionally, this installs any packages in editable mode.
+      Which is analogous to `pip install -e .`.
     cmds:
       - poetry install --no-ansi
 

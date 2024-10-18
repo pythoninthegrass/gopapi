@@ -1,24 +1,67 @@
 #!/usr/bin/env python
 
 import json
-import os
 import sys
 import typer
 from gopappy.api import API
+from gopappy.auth import get_env, get_keyring, set_keyring
 from gopappy.colorize import colorize
 from gopappy import __version__
+from pathlib import Path
 from typing import Optional
 from urllib.parse import urlencode
 
 app = typer.Typer()
 
+env_file_path = None
+
+def get_credentials():
+    global env_file_path
+
+    # If env_file_path is provided, use it. Otherwise, check for .env in the current directory
+    if env_file_path:
+        env_path = Path(env_file_path).expanduser().resolve()
+    else:
+        env_path = Path.cwd() / '.env'
+
+    if env_path.exists():
+        API_KEY, API_SECRET, DOMAIN = get_env(str(env_path))
+        if API_KEY and API_SECRET and DOMAIN:
+            colorize("green", f"Successfully loaded credentials from {env_path}")
+            return API_KEY, API_SECRET, DOMAIN
+        else:
+            colorize("yellow", f"Incomplete credentials in {env_path}")
+    elif env_file_path:
+        colorize("yellow", f"Specified .env file not found: {env_path}")
+
+    # If .env file doesn't exist, is not specified, or is incomplete, try keyring
+    keyring_creds = get_keyring(silent=True)
+    if keyring_creds and all(keyring_creds):
+        colorize("green", "Credentials loaded from keyring")
+        return keyring_creds
+
+    # If no credentials are found, prompt the user
+    colorize("yellow", "No credentials found. Please enter your credentials.")
+    API_KEY = typer.prompt("Enter your GoDaddy API Key")
+    API_SECRET = typer.prompt("Enter your GoDaddy API Secret", hide_input=True)
+    DOMAIN = typer.prompt("Enter your GoDaddy Domain")
+
+    # Save to keyring
+    set_keyring(API_KEY, API_SECRET, DOMAIN)
+    colorize("green", "Credentials saved to keyring")
+
+    return API_KEY, API_SECRET, DOMAIN
+
+def get_api():
+    API_KEY, API_SECRET, _ = get_credentials()
+    return API(API_KEY, API_SECRET)
 
 @app.command()
 def records(
     domain: str = typer.Argument(..., help="Domain to be managed. e.g. mydomain.com"),
     only_type: Optional[str] = typer.Option(None, "--type", "-t", help="Filter by record type"),
 ):
-    api = API.shared()
+    api = get_api()
     response = api.get(f"domains/{domain}/records")
     records = response.json()
 
@@ -34,7 +77,6 @@ def records(
         colorize("red", f"Domain:\t{domain}")
         colorize("red", f"Error:\t{e}")
 
-
 @app.command()
 def add_record(
     domain: str = typer.Argument(..., help="Domain to be managed. e.g. mydomain.com"),
@@ -42,7 +84,7 @@ def add_record(
     name: str = typer.Option(..., "--name", "-n", help="Record name"),
     data: str = typer.Option(..., "--data", "-d", help="Record data"),
 ):
-    api = API.shared()
+    api = get_api()
     url = f"domains/{domain}/records"
     record_data = [{"type": type_.upper(), "name": name, "data": data}]
     response = api.patch(url, json=record_data)
@@ -62,14 +104,13 @@ def add_record(
     else:
         print("Record added successfully.")
 
-
 @app.command()
 def delete_record(
     domain: str = typer.Argument(..., help="Domain to be managed. e.g. mydomain.com"),
     type_: str = typer.Option(..., "--type", "-t", help="Record type"),
     name: str = typer.Option(..., "--name", "-n", help="Record name"),
 ):
-    api = API.shared()
+    api = get_api()
 
     print(f"Domain: {domain}")
     print(f"Type: {type_}")
@@ -102,10 +143,11 @@ def delete_record(
                     print("Response text: Empty", file=sys.stderr)
             exit(1)
 
-
 @app.command()
-def domains(status: str = typer.Option("active", help="Filter by domain status")):
-    api = API.shared()
+def domains(
+    status: str = typer.Option("active", help="Filter by domain status"),
+):
+    api = get_api()
     data = api.get("/domains")
     status = status.upper() if status else ""
     for domain in data.json():
@@ -114,47 +156,37 @@ def domains(status: str = typer.Option("active", help="Filter by domain status")
             colorize(color, f"[DOMAIN] {domain['domain']}")
             colorize(color, f"[STATUS] {domain['status']}")
 
-
-# TODO
-# ! {'code': 'ACCESS_DENIED', 'message': 'Authenticated user is not allowed access'}
 @app.command("check")
-def check_availability(domain: str = typer.Argument(..., help="Domain to check")):
-    api = API.shared()
-    params = urlencode({
-        "domain": domain,
-        "checkType": "FAST",
-        "forTransfer": "false"
-    })
+def check_availability(
+    domain: str = typer.Argument(..., help="Domain to check"),
+):
+    api = get_api()
+    params = urlencode({'domain': domain})
     url = f"domains/available?{params}"
-    data = [domain]
-    response = api.get(url, json=data)
-    print(response.json())
-
+    response = api.get(url)
+    if response.status_code == 200:
+        result = response.json()
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Error: {response.status_code}")
+        print(response.text)
 
 def _version_callback(value: bool):
     if value:
         print(__version__)
         raise typer.Exit()
 
-
 @app.callback()
-def version(
-    version: bool = typer.Option(None,
-                                 "--version", "-v",
-                                 callback=_version_callback,
-                                 is_eager=True,
-                                 help="Print the version and exit"
-    ),
+def main(
+    version: bool = typer.Option(None, "--version", "-v", callback=_version_callback, is_eager=True, help="Print the version and exit"),
+    env_file: Optional[str] = typer.Option(None, "--env-file", "-e", help="Path to .env file"),
 ):
-    pass
-
-
-def main():
-    if len(sys.argv) == 1:
-        app(["--help"])
-    else:
-        app(sys.argv[1:])
+    """
+    GoDaddy CLI tool for managing domains and records.
+    """
+    global env_file_path
+    env_file_path = env_file
 
 
 if __name__ == "__main__":
-    main()
+    app()

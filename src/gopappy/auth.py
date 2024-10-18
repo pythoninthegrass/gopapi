@@ -5,7 +5,7 @@ import keyring.util.platform_ as kp
 import sys
 from gopappy.colorize import colorize
 from colorama import Fore, Style
-from decouple import config, UndefinedValueError
+from decouple import Config, RepositoryEnv, UndefinedValueError, AutoConfig
 from getpass import getpass
 from keyring import errors
 from pathlib import Path
@@ -27,21 +27,33 @@ def print_env(key, secret, domain):
     colorize("yellow", f"DOMAIN:\t\t{domain}\n")
 
 
-# TODO: .env file isn't read from repo when running pypi library
-def get_env(silent=True):
+def get_env(env_path=None, silent=True):
     """Get environment variables from .env file or from the environment."""
     try:
+        if env_path:
+            config = Config(RepositoryEnv(env_path))
+        else:
+            # Try to find .env in the current working directory
+            cwd_env = Path.cwd() / '.env'
+            if cwd_env.exists():
+                config = Config(RepositoryEnv(str(cwd_env)))
+            else:
+                # Fall back to os.environ if no .env file is found
+                config = AutoConfig(search_path=Path.cwd())
+
         API_KEY = config("API_KEY")
         API_SECRET = config("API_SECRET")
         DOMAIN = config("DOMAIN")
-        if silent is False:
+
+        if not silent:
             colorize("green", "Successfully loaded environment variables!\n")
             print_env(API_KEY, API_SECRET, DOMAIN)
         return API_KEY, API_SECRET, DOMAIN
     except UndefinedValueError:
-        if verbose is True:
+        if verbose:
             colorize("red", "API_KEY, API_SECRET or DOMAIN are not set in .env file or as environment variables")
-            colorize("yellow", f"Script is being called from {cwd}")
+            colorize("yellow", f"Script is being called from {Path.cwd()}")
+        return None, None, None
 
 
 def set_keyring(key, secret, domain):

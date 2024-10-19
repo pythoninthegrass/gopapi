@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0](https://github.com/pythoninthegrass/gopappy/compare/v1.7.1...v1.8.0) (2024-10-19)
+
+
+### Features
+
+* read .env file ([d62ad74](https://github.com/pythoninthegrass/gopappy/commit/d62ad741544a41264fc96dde9859eac70ccd02e1))
+
+
+### Bug Fixes
+
+* uppercase the record type ([983ebd2](https://github.com/pythoninthegrass/gopappy/commit/983ebd2ae419f8048c5fdeabe8971f0af9ea3f3d))
+
 ## [1.7.1](https://github.com/pythoninthegrass/gopappy/compare/v1.6.5...v1.7.1) (2024-10-18)
 
 

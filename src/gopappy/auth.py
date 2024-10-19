@@ -19,43 +19,44 @@ def redact(text):
     """Redact the middle of a string, leaving the first and last 4 characters untouched."""
     return text[:4] + '*' * (len(text) - 8) + text[-4:]
 
-
 def print_env(key, secret, domain):
     """Print the environment variables."""
     colorize("yellow", f"API_KEY:\t{redact(key)}")
     colorize("yellow", f"API_SECRET:\t{redact(secret)}")
     colorize("yellow", f"DOMAIN:\t\t{domain}\n")
 
+def get_env(env_file=None):
+    """Get environment variables from .env file or environment variables"""
+    if env_file:
+        config = Config(RepositoryEnv(env_file))
+    else:
+        config = AutoConfig()
 
-def get_env(env_path=None, silent=True):
-    """Get environment variables from .env file or from the environment."""
     try:
-        if env_path:
-            config = Config(RepositoryEnv(env_path))
-        else:
-            # Try to find .env in the current working directory
-            cwd_env = Path.cwd() / '.env'
-            if cwd_env.exists():
-                config = Config(RepositoryEnv(str(cwd_env)))
-            else:
-                # Fall back to os.environ if no .env file is found
-                config = AutoConfig(search_path=Path.cwd())
+        api_key = config('API_KEY')
+        api_secret = config('API_SECRET')
+        domain = config('DOMAIN')
+    except UndefinedValueError as e:
+        colorize("red", f"Environment variable error: {str(e)}\n")
+        return None
 
-        API_KEY = config("API_KEY")
-        API_SECRET = config("API_SECRET")
-        DOMAIN = config("DOMAIN")
+    return api_key, api_secret, domain
 
+def get_keyring(silent=False):
+    """Get environment variables from the system's keyring."""
+    try:
+        key = keyring.get_password("gopappy", "API_KEY")
+        secret = keyring.get_password("gopappy", "API_SECRET")
+        domain = keyring.get_password("gopappy", "DOMAIN")
         if not silent:
-            colorize("green", "Successfully loaded environment variables!\n")
-            print_env(API_KEY, API_SECRET, DOMAIN)
-        return API_KEY, API_SECRET, DOMAIN
-    except UndefinedValueError:
-        if verbose:
-            colorize("red", "API_KEY, API_SECRET or DOMAIN are not set in .env file or as environment variables")
-            colorize("yellow", f"Script is being called from {Path.cwd()}")
+            colorize("green", "Successfully retrieved environment variables from keyring!\n")
+        return key, secret, domain
+    except Exception as e:
+        if not silent:
+            colorize("red", f"Failed to retrieve environment variables from keyring: {str(e)}\n")
         return None, None, None
 
-
+# TODO: fix bare except
 def set_keyring(key, secret, domain):
     """Set environment variables in the system's keyring."""
     try:
@@ -63,26 +64,8 @@ def set_keyring(key, secret, domain):
         keyring.set_password("gopappy", "API_SECRET", secret)
         keyring.set_password("gopappy", "DOMAIN", domain)
         colorize("green", "Successfully set environment variables in keyring!\n")
-    except kp.errors.InitError:
-        colorize("red", "Failed to retrieve environment variables from keyring")
-
-
-def get_keyring(silent=True):
-    """Get environment variables from the system's keyring."""
-    try:
-        API_KEY = keyring.get_password("gopappy", "API_KEY")
-        API_SECRET = keyring.get_password("gopappy", "API_SECRET")
-        DOMAIN = keyring.get_password("gopappy", "DOMAIN")
-        if not API_KEY or not API_SECRET or not DOMAIN:
-            raise errors.InitError
-        else:
-            if silent is False:
-                colorize("green", "Successfully loaded environment variables from keyring!\n")
-                print_env(API_KEY, API_SECRET, DOMAIN)
-            return API_KEY, API_SECRET, DOMAIN
-    except (errors.InitError, TypeError):
-        colorize("red", "Failed to retrieve environment variables from keyring")
-
+    except Exception as e:
+        colorize("red", f"Failed to set environment variables in keyring: {str(e)}\n")
 
 def main():
     # try .env file and env vars first
@@ -99,7 +82,6 @@ def main():
             set_keyring(API_KEY, API_SECRET, DOMAIN)
 
     return API_KEY, API_SECRET
-
 
 if __name__ == "__main__":
     main()
